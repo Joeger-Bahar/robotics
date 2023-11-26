@@ -266,6 +266,7 @@ void headlessMode(const double movementSpeed)
 	robotRotation = robotRotation > 180 ? robotRotation - 360 : robotRotation;
 	pros::lcd::print(2, "Robot rotation in -180-180: %f", robotRotation);
 
+
 	if (leftStickMoved) // If the joystick has moved
 	{
 		pros::lcd::print(4, "Moved");
