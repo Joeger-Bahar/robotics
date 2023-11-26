@@ -273,6 +273,7 @@ void headlessMode(const double movementSpeed)
 		// Gets the robots rotation in degrees, from -180 to 180
 		// Assuming get_rotation() returns a value from 0 to 360
 
+		
 		int motorSpeed = movementSpeed * 127;
 		
 		double joystickDegree = leftStickDegree < 0 ? leftStickDegree + 360 : leftStickDegree; // convert joystick degree to 0-360 range for calculation
