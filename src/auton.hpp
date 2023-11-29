@@ -89,6 +89,7 @@ void turnTo(okapi::QAngle angle, const int speed)
 	BR.move_velocity(0);
 }
 
+
 double operator""_rotations(long double value)
 {
 	return static_cast<double>(value * 360);
@@ -164,7 +165,7 @@ void DefensiveAuton(pros::ADIDigitalOut& pneumatics)
 	chassis->setMaxVelocity(600);
 	chassis->moveDistance(-0.65_tile);
 	chassis->setMaxVelocity(300);
-	chassis->moveDistance(0.55_tile);
+	chassis->moveDistance(0.65_tile);
 	chassis->setMaxVelocity(600);
 	chassis->moveDistance(-0.65_tile);
 

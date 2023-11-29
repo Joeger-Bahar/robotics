@@ -6,6 +6,7 @@
 #include <cmath>
 #include "api.h"
 #include "okapi/api.hpp"
+#include "time.hpp"
 
 //using namespace okapi;
 using namespace okapi::literals;
@@ -24,6 +25,8 @@ pros::Motor Catapult2(11, 1);
 pros::Motor Intake(18, 1); // Reversed
 
 pros::IMU inertial(7);
+
+Time::Timer timer;
 
 // Make pneumatics
 //pros::ADIPort pneumatics('A', pros::adi_port_config_e::E_ADI_DIGITAL_OUT);
