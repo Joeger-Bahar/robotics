@@ -553,6 +553,33 @@ void checkPneumatics(pros::ADIDigitalOut& pneumatics, const driverPresets curren
 		pneumatics.set_value(0);
 }
 
+void matchLoad()
+{
+	FL.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	FR.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	BL.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	BR.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+
+	FL.brake();
+	FR.brake();
+	BL.brake();
+	BR.brake();
+
+	Catapult.move(127);
+	Catapult2.move(63.5);
+
+	while (!master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y) && !master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y)
+		&& !master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_X) && !master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X))
+	{
+		pros::delay(2);
+	}
+
+	FL.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+	FR.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+	BL.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+	BR.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+}
+
 void opcontrol()
 {
 	bool brakeOn = 0;
@@ -601,6 +628,8 @@ void opcontrol()
 		}
 		#endif // COMPETITION
 
+		if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A) && selectedPreset == driverPresets::CALEB)
+			matchLoad();
 
 		driveTrain(movementSpeed, selectedPreset);
 		checkmovementSpeed(movementSpeed, selectedPreset);
