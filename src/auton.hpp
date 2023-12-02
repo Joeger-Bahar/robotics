@@ -147,7 +147,7 @@ void DefensiveAuton(pros::ADIDigitalOut& pneumatics)
 	inertial.set_rotation(-45);
 
 	// Remove match load
-	pneumatics.set_value(1);
+	//pneumatics.set_value(1);
 	pros::delay(300);
 	FR.move_relative(-3_rotations, 300);
 	BR.move_relative(-3_rotations, 300);
@@ -156,7 +156,7 @@ void DefensiveAuton(pros::ADIDigitalOut& pneumatics)
 
 	// Finish movement
 	pros::delay(500);
-	pneumatics.set_value(0);
+	//pneumatics.set_value(0);
 	pros::delay(1200);
 
 	// Hits the triballs twice
