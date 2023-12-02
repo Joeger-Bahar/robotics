@@ -169,6 +169,25 @@ void DefensiveAuton(pros::ADIDigitalOut& pneumatics)
 	chassis->setMaxVelocity(600);
 	chassis->moveDistance(-0.65_tile);
 
+	pros::delay(200);
+	chassis->setMaxVelocity(300);
+	FL.move_relative(2_rotations, 300);
+	FR.move_relative(2_rotations, 300);
+	BL.move_relative(2_rotations, 300);
+	BR.move_relative(2_rotations, 300);
+	pros::delay(1000);
+	FL.move_relative(2.5_rotations, 300);
+	BL.move_relative(2.5_rotations, 300);
+	pros::delay(1000);
+	FR.move_relative(-0.6_rotations, 200);
+	BR.move_relative(-0.6_rotations, 200);
+	pros::delay(1000);
+	FL.move_relative(0.5_rotations, 200);
+	FR.move_relative(0.2_rotations, 200);
+	BL.move_relative(0.5_rotations, 200);
+	BR.move_relative(0.2_rotations, 200);
+	pros::delay(1000);
+
 	// Drives away from goal and turns
 	// chassis->setMaxVelocity(300);
 	// chassis->moveDistance(0.25_tile);
