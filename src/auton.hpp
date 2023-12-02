@@ -170,20 +170,20 @@ void DefensiveAuton(pros::ADIDigitalOut& pneumatics)
 	chassis->moveDistance(-0.65_tile);
 
 	// Drives away from goal and turns
-	chassis->setMaxVelocity(300);
-	chassis->moveDistance(0.25_tile);
-	turnTo(90_deg, 120);
+	// chassis->setMaxVelocity(300);
+	// chassis->moveDistance(0.25_tile);
+	// turnTo(90_deg, 120);
 
-	// Drive towards elevation bar
-	chassis->setMaxVelocity(300);
-	chassis->moveDistance(-1.93_tile);
+	// // Drive towards elevation bar
+	// chassis->setMaxVelocity(300);
+	// chassis->moveDistance(-1.93_tile);
 
-	// Touch wings to evelation bar
-	pros::delay(300);
-	pneumatics.set_value(1);
-	pros::delay(300);
-	FL.move_relative(-1_rotations, 240);
-	BL.move_relative(-1_rotations, 240);
-	FR.move_relative(0.50_rotations, 120);
-	BR.move_relative(0.50_rotations, 120);
+	// // Touch wings to evelation bar
+	// pros::delay(300);
+	// pneumatics.set_value(1);
+	// pros::delay(300);
+	// FL.move_relative(-1_rotations, 240);
+	// BL.move_relative(-1_rotations, 240);
+	// FR.move_relative(0.50_rotations, 120);
+	// BR.move_relative(0.50_rotations, 120);
 }
