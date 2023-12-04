@@ -426,9 +426,12 @@ void checkIntake(const driverPresets currentPreset)
 
 	case driverPresets::HENRY:
 	case driverPresets::HENRY2:
-		if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R1))
-			Intake.move(pros::E_MAX_MOVE_SPEED);
+		Intake.move(pros::E_MAX_MOVE_SPEED / 4);
+
 		if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R2))
+			Intake.move(pros::E_MAX_MOVE_SPEED);
+
+		if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R1))
 			Intake.move(-pros::E_MAX_MOVE_SPEED);
 		break;
 
@@ -594,6 +597,10 @@ void opcontrol()
 	Time::Timer time;
 
 	bool wingsOut = 0;
+	while (inertial.is_calibrating())
+	{
+		pros::delay(2);
+	}
 
 	while (1)
 	{
@@ -628,6 +635,7 @@ void opcontrol()
 		}
 		#endif // COMPETITION
 
+		pros::lcd::print(0, "Pitch: %f", inertial.get_pitch());
 		if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A) && selectedPreset == driverPresets::CALEB)
 			matchLoad();
 
