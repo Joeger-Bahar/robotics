@@ -349,7 +349,7 @@ void driveTrain(const double movementSpeed, const driverPresets currentPreset)
 		pros::lcd::print(0, "Running Rotation");
 	}
 	// Non-Holomonic Headless Mode for Henry's second preset
-	else if (currentPreset == driverPresets::HENRY2)
+	else if (currentPreset == driverPresets::HENRY)
 	{
 		headlessMode(movementSpeed);
 	}
@@ -636,8 +636,14 @@ void opcontrol()
 		#endif // COMPETITION
 
 		pros::lcd::print(0, "Pitch: %f", inertial.get_pitch());
-		if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A) && selectedPreset == driverPresets::CALEB)
+		if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A))
 			matchLoad();
+		if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_B))
+		{
+			FR.move_relative(300, 400);
+			BR.move_relative(300, 400);
+			pros::delay(1000);
+		}
 
 		driveTrain(movementSpeed, selectedPreset);
 		checkmovementSpeed(movementSpeed, selectedPreset);
