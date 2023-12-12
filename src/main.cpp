@@ -351,8 +351,10 @@ void driveTrain(const double movementSpeed, const driverPresets currentPreset)
 	// Non-Holomonic Headless Mode for Henry's second preset
 	else if (currentPreset == driverPresets::HENRY)
 	{
+		// R2 is forward at full speed, L2 is backwards at full speed
 		int leftStickY = (master.get_digital(pros::E_CONTROLLER_DIGITAL_R2) * (127 * movementSpeed)) - 
 							(master.get_digital(pros::E_CONTROLLER_DIGITAL_L2) * (127 * movementSpeed));
+
 		int rightStickX = master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X) * movementSpeed;
 		FL.move(leftStickY + rightStickX);
 		FR.move(leftStickY - rightStickX);
