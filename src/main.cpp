@@ -351,7 +351,14 @@ void driveTrain(const double movementSpeed, const driverPresets currentPreset)
 	// Non-Holomonic Headless Mode for Henry's second preset
 	else if (currentPreset == driverPresets::HENRY)
 	{
-		headlessMode(movementSpeed);
+		int leftStickY = (master.get_digital(pros::E_CONTROLLER_DIGITAL_R2) * (127 * movementSpeed)) - 
+							(master.get_digital(pros::E_CONTROLLER_DIGITAL_L2) * (127 * movementSpeed));
+		int rightStickX = master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X) * movementSpeed;
+		FL.move(leftStickY + rightStickX);
+		FR.move(leftStickY - rightStickX);
+		
+		BL.move(leftStickY + rightStickX);
+		BR.move(leftStickY - rightStickX);
 	}
 	// Split arcade drive
 	else if (currentPreset == driverPresets::HENRY || currentPreset == driverPresets::JOSHUA || currentPreset == driverPresets::JAY)
