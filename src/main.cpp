@@ -1,9 +1,11 @@
 /*
 PRESETS:
 
+Y is brake, A for matchload, B for move to matchload
+
 Caleb: Tank Drive, Up/Down arrows to change the movement speed, R2 for intake in, L1 for intake out, R1 to launch catapult
 
-Henry: Split arcade Drive, Up/Down arrows to change the movement speed, R1 for intake in, R2 for intake out, L1 to launch catapult
+Henry: Split arcade Drive, Up/Down arrows to change the movement speed, R1 for intake in, Left Arrow for intake out, L1 to launch catapult, Right Arrow for wings
 
 Jack: Tank Drive, Up/Down arrows to change the movement speed, always intaking; R2 switches intake direction, L2 to launch catapult
 
@@ -437,7 +439,7 @@ void checkIntake(const driverPresets currentPreset)
 	case driverPresets::HENRY2:
 		Intake.move(pros::E_MAX_MOVE_SPEED / 4);
 
-		if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R2))
+		if (master.get_digital(pros::E_CONTROLLER_DIGITAL_LEFT))
 			Intake.move(pros::E_MAX_MOVE_SPEED);
 
 		if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R1))
@@ -548,13 +550,17 @@ void checkPneumatics(pros::ADIDigitalOut& pneumatics, const driverPresets curren
 		if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R1))
 			wingsOut = !wingsOut;
 		break;
-
-	case driverPresets::HENRY:
-	case driverPresets::HENRY2:
 	case driverPresets::CALEB:
 		if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L2))
 			wingsOut = !wingsOut;
 		break;
+
+	case driverPresets::HENRY:
+	case driverPresets::HENRY2:
+		if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_RIGHT))
+			wingsOut = !wingsOut;
+		break;
+		
 
 	default:
 		break;
