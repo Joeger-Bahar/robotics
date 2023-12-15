@@ -598,6 +598,43 @@ void matchLoad()
 	BR.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
 }
 
+void wheely()
+{
+	FL.move_velocity(0);
+	FR.move_velocity(0);
+	BL.move_velocity(0);
+	BR.move_velocity(0);
+
+	FL.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	FR.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	BL.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	BR.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+
+	FL.brake();
+	FR.brake();
+	BL.brake();
+	BR.brake();
+
+	FL.move_relative(-1000, 600);
+	FR.move_relative(-1000, 600);
+	BL.move_relative(-1000, 600);
+	BR.move_relative(-1000, 600);
+
+	pros::delay(1000);
+
+	FL.move_relative(2000, 600);
+	FR.move_relative(2000, 600);
+	BL.move_relative(2000, 600);
+	BR.move_relative(2000, 600);
+
+	pros::delay(1000);
+
+	FL.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+	FR.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+	BL.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+	BR.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+}
+
 void opcontrol()
 {
 	bool brakeOn = 0;
@@ -659,6 +696,9 @@ void opcontrol()
 			BR.move_relative(300, 400);
 			pros::delay(1000);
 		}
+
+		if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_Y))
+			wheely();
 
 		driveTrain(movementSpeed, selectedPreset);
 		checkmovementSpeed(movementSpeed, selectedPreset);
