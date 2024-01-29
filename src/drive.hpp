@@ -16,6 +16,9 @@ using namespace okapi::literals;
 pros::Motor FL(5);
 pros::Motor FR(17, 1);
 
+pros::Motor ML(3);
+pros::Motor MR(20, 1);
+
 pros::Motor BL(4);
 pros::Motor BR(19, 1);
 
