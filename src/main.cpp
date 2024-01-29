@@ -11,7 +11,7 @@ Jack: Tank Drive, Up/Down arrows to change the movement speed, always intaking; 
 
 Milo: Tank Drive, Up/Down arrows to change the movement speed, R2 for intake in, R1 for intake out, L2 to launch catapult
 
-Jay: Split arcade Drive, Up/Down arrows to change the movement speed, Left arrow to toggle on and off intake; right is pressed to reverse intake, a brings catapult down in small increments, R2 to launch catapult
+Jay: Split arcade Drive, Up/Down arrows to change the movement speed, Left arrow to toggle on and off intake; right is pressed to reverse intake, R2 to launch catapult
 
 Joshua: Split arcade Drive, Up/Down arrows to change the movement speed, L2 for intake in, L1 for intake out, R2 to launch catapult
 */
@@ -136,8 +136,7 @@ void presetSelection(driverPresets& selectedPreset)
 	{
 		// If any motors are moving
 		Intake.move_velocity(0);
-		Catapult.move_velocity(0);
-		Catapult2.move_velocity(0);
+		Slapatapult.move_velocity(0);
 
 		master.clear();
 		pros::delay(100);
@@ -251,6 +250,8 @@ void headlessMode(const double movementSpeed)
 	// Default speed
 	FL.move_velocity(0);
 	FR.move_velocity(0);
+	ML.move_velocity(0);
+	MR.move_velocity(0);
 	BL.move_velocity(0);
 	BR.move_velocity(0);
 	
@@ -295,6 +296,8 @@ void headlessMode(const double movementSpeed)
 			{
 				FL.move(motorSpeed);
 				FR.move(-motorSpeed);
+				ML.move(motorSpeed);
+				MR.move(-motorSpeed);
 				BL.move(motorSpeed);
 				BR.move(-motorSpeed);
 			}
@@ -303,6 +306,8 @@ void headlessMode(const double movementSpeed)
 			{
 				FL.move(-motorSpeed);
 				FR.move(motorSpeed);
+				ML.move(-motorSpeed);
+				MR.move(motorSpeed);
 				BL.move(-motorSpeed);
 				BR.move(motorSpeed);
 			}
@@ -312,6 +317,8 @@ void headlessMode(const double movementSpeed)
 			// Drive forward
 			FL.move(motorSpeed);
 			FR.move(motorSpeed);
+			ML.move(motorSpeed);
+			MR.move(motorSpeed);
 			BL.move(motorSpeed);
 			BR.move(motorSpeed);
 		}
@@ -331,6 +338,8 @@ void checkBrake(bool& brakeOn)
 		{
 			FL.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 			FR.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+			ML.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+			MR.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 			BL.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 			BR.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 		}
@@ -338,6 +347,8 @@ void checkBrake(bool& brakeOn)
 		{
 			FL.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
 			FR.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+			ML.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+			MR.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
 			BL.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
 			BR.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
 		}
@@ -362,6 +373,9 @@ void driveTrain(const double movementSpeed, const driverPresets currentPreset)
 		int rightStickX = master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X) * movementSpeed;
 		FL.move(leftStickY + rightStickX);
 		FR.move(leftStickY - rightStickX);
+
+		ML.move(leftStickY + rightStickX);
+		MR.move(leftStickY - rightStickX);
 		
 		BL.move(leftStickY + rightStickX);
 		BR.move(leftStickY - rightStickX);
@@ -373,6 +387,9 @@ void driveTrain(const double movementSpeed, const driverPresets currentPreset)
 		int rightStickX = master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X) * movementSpeed;
 		FL.move(leftStickY + rightStickX);
 		FR.move(leftStickY - rightStickX);
+
+		ML.move(leftStickY + rightStickX);
+		MR.move(leftStickY - rightStickX);
 		
 		BL.move(leftStickY + rightStickX);
 		BR.move(leftStickY - rightStickX);
@@ -384,6 +401,9 @@ void driveTrain(const double movementSpeed, const driverPresets currentPreset)
 		int rightStickY = master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y) * movementSpeed;
 		FL.move(leftStickY);
 		FR.move(rightStickY);
+
+		ML.move(leftStickY);
+		MR.move(rightStickY);
 		
 		BL.move(leftStickY);
 		BR.move(rightStickY);
@@ -483,8 +503,7 @@ Don't have a catapult at the moment, but we're building it
 */
 void checkCatapult(const driverPresets currentPreset)
 {
-	Catapult.move(0);
-	Catapult2.move(0);
+	Slapatapult.move(0);
 	
 	switch (currentPreset)
 	{
@@ -492,44 +511,35 @@ void checkCatapult(const driverPresets currentPreset)
 	case driverPresets::MILO:
 		if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L2))
 		{
-			Catapult.move(127);
-			Catapult2.move(63.5);
+			Slapatapult.move(127);
 		}
 		break;
 
 	case driverPresets::CALEB:
 		if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R1))
 		{
-			Catapult.move(127);
-			Catapult2.move(63.5);
+			Slapatapult.move(127);
 		}
 		break;
 
 	case driverPresets::HENRY:
 		if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L1))
 		{
-			Catapult.move(127);
-			Catapult2.move(63.5);
+			Slapatapult.move(127);
 		}
 		break;
 
 	case driverPresets::JOSHUA:
 		if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R2))
 		{
-			Catapult.move(127);
-			Catapult2.move(63.5);
+			Slapatapult.move(127);
 		}
 		break;
 
 	case driverPresets::JAY:
 		if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R2))
 		{
-			Catapult.move(127);
-			Catapult2.move(63.5);
-		}
-		if (master.get_digital(pros::E_CONTROLLER_DIGITAL_A))
-		{
-			Catapult.move_relative(6, 64);
+			Slapatapult.move(127);
 		}
 		break;
 	default:
@@ -577,16 +587,20 @@ void matchLoad()
 {
 	FL.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	FR.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	ML.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	MR.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	BL.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	BR.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 
 	FL.brake();
 	FR.brake();
+	ML.brake();
+	MR.brake();
 	BL.brake();
 	BR.brake();
 
-	Catapult.move(127);
-	Catapult2.move(63.5);
+	if (distance.get() < 10)
+		Slapatapult.move(127);
 
 	while (!master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y) && !master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y)
 		&& !master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_X) && !master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X))
@@ -596,6 +610,8 @@ void matchLoad()
 
 	FL.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
 	FR.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+	ML.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+	MR.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
 	BL.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
 	BR.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
 }
@@ -604,21 +620,29 @@ void wheely()
 {
 	FL.move_velocity(0);
 	FR.move_velocity(0);
+	ML.move_velocity(0);
+	MR.move_velocity(0);
 	BL.move_velocity(0);
 	BR.move_velocity(0);
 
 	FL.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
 	FR.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+	ML.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+	MR.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
 	BL.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
 	BR.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
 
 	FL.brake();
 	FR.brake();
+	ML.brake();
+	MR.brake();
 	BL.brake();
 	BR.brake();
 
 	FL.move_relative(-1000, 600);
 	FR.move_relative(-1000, 600);
+	ML.move_relative(-1000, 600);
+	MR.move_relative(-1000, 600);
 	BL.move_relative(-1000, 600);
 	BR.move_relative(-1000, 600);
 
@@ -630,6 +654,8 @@ void wheely()
 
 	FL.move_relative(2000, 600);
 	FR.move_relative(2000, 600);
+	ML.move_relative(2000, 600);
+	MR.move_relative(2000, 600);
 	BL.move_relative(2000, 600);
 	BR.move_relative(2000, 600);
 }
@@ -692,6 +718,7 @@ void opcontrol()
 		if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_B))
 		{
 			FR.move_relative(300, 400);
+			MR.move_relative(300, 400);
 			BR.move_relative(300, 400);
 			pros::delay(1000);
 		}

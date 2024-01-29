@@ -13,28 +13,26 @@ using namespace okapi::literals;
 
 #define PI 3.1415926535897932384626433832795028841971693993751058209749445923078164062
 
-pros::Motor FL(5);
-pros::Motor FR(17, 1);
+pros::Motor FL(11, 1);
+pros::Motor FR(20);
 
-pros::Motor ML(3);
-pros::Motor MR(20, 1);
+pros::Motor ML(1, 1);
+pros::Motor MR(10);
 
-pros::Motor BL(4);
-pros::Motor BR(19, 1);
+pros::Motor BL(9, 1);
+pros::Motor BR(2);
 
-pros::Motor Catapult(21);
-pros::Motor Catapult2(11, 1);
+pros::Motor Slapatapult(8);
 
-pros::Motor Intake(18, 1); // Reversed
+pros::Motor Intake(12, 1); // Reversed
 
-pros::IMU inertial(7);
+pros::IMU inertial(5);
+pros::Distance distance(3);
 
 Time::Timer timer;
 
 // Make pneumatics
 //pros::ADIPort pneumatics('A', pros::adi_port_config_e::E_ADI_DIGITAL_OUT);
-
-
 
 std::shared_ptr<okapi::OdomChassisController> chassis =
   okapi::ChassisControllerBuilder()
