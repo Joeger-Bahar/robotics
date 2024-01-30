@@ -13,20 +13,31 @@ using namespace okapi::literals;
 
 #define PI 3.1415926535897932384626433832795028841971693993751058209749445923078164062
 
-pros::Motor FL(11, 1);
-pros::Motor FR(20);
+/*
+FL 20
+ML 9
+BL 12
+FR 11
+MR 2
+BR 19
+Slapatapult 3
+Intake 10
+*/
 
-pros::Motor ML(1, 1);
-pros::Motor MR(10);
+pros::Motor FL(20);
+pros::Motor FR(11, 1);
 
-pros::Motor BL(9, 1);
-pros::Motor BR(2);
+pros::Motor ML(9);
+pros::Motor MR(2, 1);
 
-pros::Motor Slapatapult(8);
+pros::Motor BL(12);
+pros::Motor BR(19, 1);
 
-pros::Motor Intake(12, 1); // Reversed
+pros::Motor Slapatapult(3);
 
-pros::IMU inertial(5);
+pros::Motor Intake(10, 1); // Reversed
+
+pros::IMU inertial(4);
 pros::Distance distance(3);
 
 Time::Timer timer;
@@ -36,7 +47,7 @@ Time::Timer timer;
 
 std::shared_ptr<okapi::OdomChassisController> chassis =
   okapi::ChassisControllerBuilder()
-    .withMotors(5, 17, 19, 4)
+    .withMotors(20, 11, 19, 12)
     // Green gearset, 4 in wheel diam, 12.5 in wheel track
     .withDimensions({okapi::AbstractMotor::gearset::blue, (36.0 / 72.0)}, {{4_in, 13.5_in}, 1200L})
 	// .withGains(

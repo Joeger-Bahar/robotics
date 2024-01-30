@@ -37,8 +37,7 @@ bool etchaSketch()
     if (master.get_digital(pros::E_CONTROLLER_DIGITAL_DOWN) && master.get_digital(pros::E_CONTROLLER_DIGITAL_B))
     {
         Intake.move(0);
-        Catapult.move(0);
-        Catapult2.move(63.5);
+        Slapatapult.move(0);
 
         returnValue = 1;
         master.clear();
