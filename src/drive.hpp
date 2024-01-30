@@ -14,24 +14,25 @@ using namespace okapi::literals;
 #define PI 3.1415926535897932384626433832795028841971693993751058209749445923078164062
 
 /*
-FL 20
-ML 9
-BL 12
-FR 11
-MR 2
-BR 19
+FL 11, reversed
+ML 2, reversed
+BL 19, reversed
+FR 20
+MR 9
+BR 12
 Slapatapult 3
-Intake 10
+Intake 10, reversed
+Inertial 4
 */
 
-pros::Motor FL(20);
-pros::Motor FR(11, 1);
+pros::Motor FL(11, 1);
+pros::Motor FR(20);
 
-pros::Motor ML(9);
-pros::Motor MR(2, 1);
+pros::Motor ML(2, 1);
+pros::Motor MR(9);
 
-pros::Motor BL(12);
-pros::Motor BR(19, 1);
+pros::Motor BL(19, 1);
+pros::Motor BR(12);
 
 pros::Motor Slapatapult(3);
 

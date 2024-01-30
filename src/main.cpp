@@ -397,6 +397,7 @@ void driveTrain(const double movementSpeed, const driverPresets currentPreset)
 	// Tank drive
 	else
 	{
+		pros::lcd::print(0, "Running Tank");
 		int leftStickY = master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y) * movementSpeed;
 		int rightStickY = master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_Y) * movementSpeed;
 		FL.move(leftStickY);
@@ -681,7 +682,7 @@ void opcontrol()
 
 	while (1)
 	{
-#if !COMPETITION
+#if 0
 		if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_X))
 		{
 			if (explosion.explosion)
