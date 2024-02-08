@@ -60,7 +60,6 @@ QUANTITY_TYPE(0, 1, -2, 0, Acceleration);
 // Angle type:
 QUANTITY_TYPE(0, 0, 0, 1, Angle);
 
-
 // Standard arithmetic operators:
 // ------------------------------
 template <typename M, typename L, typename T, typename A>

@@ -23,6 +23,7 @@ Joshua: Split arcade Drive, Up/Down arrows to change the movement speed, L2 for 
 #include <array>
 
 #include "okapi/api.hpp"
+#include "sylib/sylib.hpp"
 #include "api.h"
 
 #include "drive.hpp"
@@ -198,6 +199,8 @@ void initialize()
 	// pros::lcd::set_text_color(0, 255, 0);
 	pros::lcd::set_background_color(0, 0, 255); // Blue
 	pros::lcd::set_text_color(255, 255, 255); // Peach
+
+	sylib::initialize();
 
 	pros::ADIDigitalOut pneumatics('A');
 	
@@ -511,37 +514,37 @@ void checkCatapult(const driverPresets currentPreset)
 	case driverPresets::JACK:
 	case driverPresets::MILO:
 		if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L2))
-		{
 			Slapatapult.move(127);
-		}
+		else
+			Slapatapult.move(0);
 		break;
 
 	case driverPresets::CALEB:
 		if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R1))
-		{
 			Slapatapult.move(127);
-		}
+		else
+			Slapatapult.move(0);
 		break;
 
 	case driverPresets::HENRY:
 		if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L1))
-		{
 			Slapatapult.move(127);
-		}
+		else
+			Slapatapult.move(0);
 		break;
 
 	case driverPresets::JOSHUA:
 		if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R2))
-		{
 			Slapatapult.move(127);
-		}
+		else
+			Slapatapult.move(0);
 		break;
 
 	case driverPresets::JAY:
 		if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R2))
-		{
 			Slapatapult.move(127);
-		}
+		else
+			Slapatapult.move(0);
 		break;
 	default:
 		break;
@@ -666,6 +669,7 @@ void opcontrol()
 	bool brakeOn = 0;
 	pros::ADIDigitalOut pneumatics('A');
 	pneumatics.set_value(0);
+	auto myLights = sylib::Addrled(1, 3, 64);
 
 	master.print(0, 0, "Driver: %s", presetNames[selectedPreset].c_str());
 	pros::delay(100);

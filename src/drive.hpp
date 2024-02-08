@@ -44,7 +44,7 @@ pros::Distance distance(3);
 Time::Timer timer;
 
 // Make pneumatics
-//pros::ADIPort pneumatics('A', pros::adi_port_config_e::E_ADI_DIGITAL_OUT);
+pros::ADIPort pneumatics('A', pros::adi_port_config_e::E_ADI_DIGITAL_OUT);
 
 std::shared_ptr<okapi::OdomChassisController> chassis =
   okapi::ChassisControllerBuilder()
