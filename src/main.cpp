@@ -669,12 +669,22 @@ void opcontrol()
 	bool brakeOn = 0;
 	pros::ADIDigitalOut pneumatics('A');
 	pneumatics.set_value(0);
-	auto myLights = sylib::Addrled(1, 3, 64);
+	master.clear();
+	pros::delay(100);
+	master.print(0, 0, "Opcontrol started");
+	pros::delay(100);
+	//auto myLights = sylib::Addrled(22, 1, 55);
+	master.clear();
+	pros::delay(100);
+	master.print(0, 0, "Running");
 
-	master.print(0, 0, "Driver: %s", presetNames[selectedPreset].c_str());
-	pros::delay(100);
-	master.print(1, 0, "Speed: %i%%", static_cast<int>(movementSpeed * 100));
-	pros::delay(100);
+	//myLights.gradient(0xFF0000, 0x00FF00, 28);
+	//myLights.gradient(0x00FF00, 0x0000FF, 27, 28);
+
+	//master.print(0, 0, "Driver: %s", presetNames[selectedPreset].c_str());
+	//pros::delay(100);
+	//master.print(1, 0, "Speed: %i%%", static_cast<int>(movementSpeed * 100));
+	//pros::delay(100);
 
 	Time::Timer time;
 
