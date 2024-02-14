@@ -204,7 +204,7 @@ void initialize()
 
 	pros::ADIDigitalOut pneumatics('A');
 	
-	chassis->setMaxVelocity(240);
+	odomChassis->setMaxVelocity(240);
 	pros::delay(100);
 	master.clear();
 	pros::delay(200);
@@ -681,10 +681,10 @@ void opcontrol()
 	//myLights.gradient(0xFF0000, 0x00FF00, 28);
 	//myLights.gradient(0x00FF00, 0x0000FF, 27, 28);
 
-	//master.print(0, 0, "Driver: %s", presetNames[selectedPreset].c_str());
-	//pros::delay(100);
-	//master.print(1, 0, "Speed: %i%%", static_cast<int>(movementSpeed * 100));
-	//pros::delay(100);
+	master.print(0, 0, "Driver: %s", presetNames[selectedPreset].c_str());
+	pros::delay(100);
+	master.print(1, 0, "Speed: %i%%", static_cast<int>(movementSpeed * 100));
+	pros::delay(100);
 
 	Time::Timer time;
 
@@ -739,7 +739,8 @@ void opcontrol()
 		}
 
 		if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_Y))
-			wheely();
+			//wheely();
+			chassis.forward(36, 400);
 
 		driveTrain(movementSpeed, selectedPreset);
 		checkmovementSpeed(movementSpeed, selectedPreset);

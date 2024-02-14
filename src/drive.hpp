@@ -7,6 +7,7 @@
 #include "api.h"
 #include "okapi/api.hpp"
 #include "time.hpp"
+#include "chassis.hpp"
 
 //using namespace okapi;
 using namespace okapi::literals;
@@ -46,7 +47,7 @@ Time::Timer timer;
 // Make pneumatics
 pros::ADIPort pneumatics('A', pros::adi_port_config_e::E_ADI_DIGITAL_OUT);
 
-std::shared_ptr<okapi::OdomChassisController> chassis =
+std::shared_ptr<okapi::OdomChassisController> odomChassis =
   okapi::ChassisControllerBuilder()
     .withMotors(20, 11, 19, 12)
     // Green gearset, 4 in wheel diam, 12.5 in wheel track
@@ -68,6 +69,8 @@ std::shared_ptr<okapi::OdomChassisController> chassis =
 //     .withMotor(3) // lift motor port 3
 //     .withGains({liftkP, liftkI, liftkD})
 //     .build();
+
+Chassis chassis({&FL, &FR, &ML, &MR, &BL, &BR}, &inertial, 0, 1, 0, 0, Gearsets::BLUE, 11.78, 10, (60 / 36));
 
 pros::Controller master(pros::E_CONTROLLER_MASTER);
 

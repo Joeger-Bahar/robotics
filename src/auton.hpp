@@ -103,34 +103,34 @@ double operator""_rotations(uint64_t value)
 void OffensiveAuton(pros::ADIDigitalOut& pneumatics)
 {
 	// Drive towards the goal
-	chassis->moveDistance(2_tile);
+	odomChassis->moveDistance(2_tile);
 	pros::delay(100);
 
 	// Score alliance triball
 	Intake.move(127);
-	chassis->turnAngle(90_deg);
+	odomChassis->turnAngle(90_deg);
 	pros::delay(100);
-	chassis->moveDistance(-0.5_tile);
-	chassis->setMaxVelocity(600);
+	odomChassis->moveDistance(-0.5_tile);
+	odomChassis->setMaxVelocity(600);
 	Intake.move(-127);
 	pros::delay(350);
 	Intake.move(0);
-	chassis->moveDistance(0.83_tile);
-	chassis->setMaxVelocity(240);
+	odomChassis->moveDistance(0.83_tile);
+	odomChassis->setMaxVelocity(240);
 	pros::delay(100);
-	chassis->moveDistance(-0.25_tile);
+	odomChassis->moveDistance(-0.25_tile);
 	pros::delay(100);
 
 	// Return to starting position
-	chassis->turnAngle(90_deg);
+	odomChassis->turnAngle(90_deg);
 	pros::delay(100);
-	chassis->moveDistance(2_tile);
+	odomChassis->moveDistance(2_tile);
 	pros::delay(100);
 
 	// Touch elevation bar
-	chassis->turnAngle(-97_deg);
+	odomChassis->turnAngle(-97_deg);
 	pros::delay(100);
-	chassis->moveDistance(-1.4_tile);
+	odomChassis->moveDistance(-1.4_tile);
 	pros::delay(100);
 	
 	master.clear();
@@ -160,17 +160,17 @@ void DefensiveAuton(pros::ADIDigitalOut& pneumatics)
 	pros::delay(1200);
 
 	// Hits the triballs twice
-	chassis->setMaxVelocity(300);
-	chassis->moveDistance(0.15_tile);
-	chassis->setMaxVelocity(600);
-	chassis->moveDistance(-0.65_tile);
-	chassis->setMaxVelocity(300);
-	chassis->moveDistance(0.65_tile);
-	chassis->setMaxVelocity(600);
-	chassis->moveDistance(-0.65_tile);
+	odomChassis->setMaxVelocity(300);
+	odomChassis->moveDistance(0.15_tile);
+	odomChassis->setMaxVelocity(600);
+	odomChassis->moveDistance(-0.65_tile);
+	odomChassis->setMaxVelocity(300);
+	odomChassis->moveDistance(0.65_tile);
+	odomChassis->setMaxVelocity(600);
+	odomChassis->moveDistance(-0.65_tile);
 
 	pros::delay(200);
-	chassis->setMaxVelocity(300);
+	odomChassis->setMaxVelocity(300);
 	FL.move_relative(2_rotations, 300);
 	FR.move_relative(2_rotations, 300);
 	BL.move_relative(2_rotations, 300);
@@ -189,13 +189,13 @@ void DefensiveAuton(pros::ADIDigitalOut& pneumatics)
 	pros::delay(1000);
 
 	// Drives away from goal and turns
-	// chassis->setMaxVelocity(300);
-	// chassis->moveDistance(0.25_tile);
+	// odomChassis->setMaxVelocity(300);
+	// odomChassis->moveDistance(0.25_tile);
 	// turnTo(90_deg, 120);
 
 	// // Drive towards elevation bar
-	// chassis->setMaxVelocity(300);
-	// chassis->moveDistance(-1.93_tile);
+	// odomChassis->setMaxVelocity(300);
+	// odomChassis->moveDistance(-1.93_tile);
 
 	// // Touch wings to evelation bar
 	// pros::delay(300);
