@@ -70,7 +70,7 @@ std::shared_ptr<okapi::OdomChassisController> odomChassis =
 //     .withGains({liftkP, liftkI, liftkD})
 //     .build();
 
-Chassis chassis({&FL, &FR, &ML, &MR, &BL, &BR}, &inertial, 0, 1, 0, 0, Gearsets::BLUE, 11.78, 10, (60 / 36));
+Chassis chassis = Chassis({-11, 20, -2, 9, -19, 12}, inertial, 0, 3, 0, 0, Gearsets::BLUE, 11.78, 10, (60 / 36));
 
 pros::Controller master(pros::E_CONTROLLER_MASTER);
 

@@ -725,9 +725,9 @@ void opcontrol()
 			master.print(1, 0, "Speed: %i%%", static_cast<int>(movementSpeed * 100));
 			pros::delay(100);
 		}
-		#endif // COMPETITION
+#endif // COMPETITION
 
-		pros::lcd::print(0, "Pitch: %f", inertial.get_pitch());
+		//pros::lcd::print(0, "Pitch: %f", inertial.get_pitch());
 		if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A))
 			matchLoad();
 		if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_B))
@@ -739,8 +739,7 @@ void opcontrol()
 		}
 
 		if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_Y))
-			//wheely();
-			chassis.forward(36, 400);
+			chassis.forward(36, 600, master);
 
 		driveTrain(movementSpeed, selectedPreset);
 		checkmovementSpeed(movementSpeed, selectedPreset);
