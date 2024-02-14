@@ -21,7 +21,7 @@ enum Gearsets
 
 class Chassis {
 public:
-    Chassis(std::vector<pros::Motor*> motors, Gearsets gearset = Gearsets::GREEN, int wheelDiameter = 12.56,
+    Chassis(std::vector<pros::Motor*> motors, int rotation = 0, Gearsets gearset = Gearsets::GREEN, int wheelDiameter = 12.56,
         int wheelTrack = 24, std::ratio<1, 1> gearRatio)
         : motors(motors), gearset(gearset), wheelDiameter(wheelDiameter), wheelTrack(wheelTrack), gearRatio(gearRatio)
     { feetToWheelRotations = units::foot.getValue() / (wheelDiameter * M_PI); }
@@ -74,6 +74,7 @@ public:
     Gearsets gearset;
     int wheelDiameter; // Inches
     int wheelTrack; // Inches
+    int rotation = 0;
     std::ratio<1, 1> gearRatio;
 
     int feetToWheelRotations;
