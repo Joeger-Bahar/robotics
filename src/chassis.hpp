@@ -2,9 +2,10 @@
 
 #include <iostream>
 #include <vector>
-#include <ratio>
 
 #include "main.h"
+
+#include "math.hpp"
 
 enum Gearsets
 {
@@ -18,8 +19,8 @@ enum Gearsets
 class Chassis
 {
 public:
-    Chassis(std::vector<int> motorPorts, pros::IMU& inertial, int rotation = 0, double kP = 3, double kI = 0, double kD = 0, Gearsets gearset = Gearsets::GREEN, float wheelDiameter = 12.56,
-        float wheelTrack = 12, double gearRatio = 1)
+    Chassis(std::vector<int> motorPorts, pros::IMU& inertial, float rotation = 0.0, double kP = 1.0, double kI = 0.0, double kD = 0.0, Gearsets gearset = Gearsets::GREEN, float wheelDiameter = 12.56,
+        float wheelTrack = 12.0, double gearRatio = 1.0)
         : motors(motors), inertial(inertial), gearset(gearset), wheelDiameter(wheelDiameter), wheelTrack(wheelTrack), gearRatio(gearRatio)
     {
         for (int port : motorPorts)
@@ -37,38 +38,43 @@ public:
         }
 
         ticksPerMotorRevolution *= gearRatio;
+
+        for (pros::Motor motor : motors)
+        {
+            motor.set_brake_mode(pros::E_MOTOR_BRAKE_BRAKE);
+        }
     }
 
-    void forward(int length, int speed, pros::Controller& master) // Length in inches
+    void forward(double length, int speed, pros::Controller& master) // Length in inches
     {
         if (speed > maxRPM)
             speed = maxRPM;
 
-        double currentPosition = 0; // In inches
-        double previousPosition = 0;
+        double currentPosition = 0.0; // In inches
+        double previousPosition = 0.0;
         double error = length - currentPosition;
-        double integral = 0;
-        double derivative = 0;
+        double integral = 0.0;
+        double derivative = 0.0;
         double previousError = error;
         double speedPercent = speed / maxRPM;
 
-        while (abs(error) > 1)
+        while (fabs(error) > 1)
         {
-            previousPosition = motors[4].get_position();
+            currentPosition += wheelRotationsToInches(motorTicksToRotations(motors[1].get_position() - previousPosition));
             error = length - currentPosition;
+            previousPosition = motors[1].get_position();
             integral += error;
             derivative = error - previousError;
 
-            float output = (kP * error) + (kI * integral) + (kD * derivative) * (speedPercent);
+            float output = (kP * error);// + (kI * integral) + (kD * derivative) * (1);
 
             for (pros::Motor motor : motors)
-                motor.move(error);
+                motor.move(error * 1.5);
 
             previousError = error;
-            currentPosition = wheelRotationsToInches(motorTicksToRotations(motors[4].get_position() - previousPosition));
             master.clear();
             pros::delay(100);
-            master.print(0, 0, "cp: %f", currentPosition);
+            master.print(0, 0, "cp: %f", error);
             pros::delay(100);
             pros::delay(15); // 15ms dT
         }
@@ -76,7 +82,7 @@ public:
         setMotorSpeed(0); // Stop the motor when the target position is reached
     }
 
-    void turn(int angle, int speed)
+    void turn(double angle, int speed)
     {
         if (speed > maxRPM)
             speed = maxRPM;
@@ -107,6 +113,73 @@ public:
 
         setMotorSpeed(0);
     }
+
+    void traceSpline(std::vector<Point> splinePoints, int speed)
+{
+	// Conversion factor from pixels to inches (12 feet = 144 inches = 1000 pixels)
+	const double pixelsToInches = 144.0 / 1000.0;
+
+	// Calculate the circumference of the wheel
+	const double wheelCircumference = M_PI * wheelDiameter;
+
+	// Initialize the current direction of the robot
+	Vector2 currentDirection(0, 1); // Assuming the robot starts facing right
+
+	// Iterate over all points in the spline
+	for (int i = 0; i < splinePoints.size() - 1; ++i)
+	{
+		// Get the current point
+		Point& currentPoint = splinePoints[i];
+		Point& nextPoint = splinePoints[i + 1];
+		Vector2 nextDirection = Vector2(nextPoint.x, nextPoint.y) - Vector2(currentPoint.x, currentPoint.y);
+		nextDirection.normalize();
+
+		// Calculate the angle between the current direction and the next direction
+		double turnDegrees = currentPoint.angleToNextPoint;
+
+		// Turn the robot
+		for (pros::Motor motor : motors)
+			motor.move_relative(turnDegrees, speed);
+
+		// Wait until the robot has finished turning
+		while (motors[0].get_target_position() != motors[0].get_position() ||
+			motors[1].get_target_position() != motors[1].get_position() ||
+			motors[2].get_target_position() != motors[2].get_position() ||
+			motors[3].get_target_position() != motors[3].get_position())
+		{
+			pros::delay(10);
+		}
+
+		double distance = currentPoint.distanceToNextPoint * pixelsToInches;
+
+		// Calculate the number of rotations needed (distance / circumference)
+		double rotations = distance / wheelCircumference;
+
+		// Adjust for the gear ratio
+		rotations *= gearRatio;
+
+		// Calculate the degrees to turn (rotations * 360)
+		int degrees = static_cast<int>(rotations * 360.0);
+
+		// Move the robot
+		for (pros::Motor motor : motors)
+			motor.move_relative(degrees, speed);
+
+		// TODO: Add code here to wait until the robot has finished moving
+		// before continuing to the next point in the spline.
+		while (motors[0].get_target_position() != motors[0].get_position() ||
+			motors[1].get_target_position() != motors[1].get_position() ||
+			motors[2].get_target_position() != motors[2].get_position() ||
+			motors[3].get_target_position() != motors[3].get_position())
+		{
+			pros::delay(10);
+		}
+
+		currentDirection = nextDirection;
+	}
+	setMotorSpeed(0);
+}
+
 
     inline void setMotorSpeed(int speed)
     {
