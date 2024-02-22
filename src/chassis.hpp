@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <vector>
+#include <cmath>
 
 #include "main.h"
 
@@ -14,14 +15,43 @@ enum Gearsets
     BLUE = 2
 };
 
+// template<class... value>
+// float average(value... args)
+// {
+//     float sum = 0;
+//     int numberOfItems = 0;
+//     for (auto i : {args...})
+//     {
+//         sum += i;
+//         ++numberOfItems;
+//     }
+//     return sum / numberOfItems;
+// }
+
+float average(std::vector<pros::Motor> vec1, std::vector<pros::Motor> vec2)
+{
+    float sum = 0.0;
+
+    for (pros::Motor motor : vec1)
+    {
+        sum += motor.get_position();
+    }
+    for (pros::Motor motor : vec2)
+    {
+        sum += motor.get_position();
+    }
+
+    return sum / (vec1.size() + vec2.size());
+}
+
 // use average of front left and back right wheels for forward function
 
 class Chassis
 {
 public:
-    Chassis(std::vector<int> motorPorts, pros::IMU& inertial, float rotation = 0.0, double kP = 1.0, double kI = 0.0, double kD = 0.0, Gearsets gearset = Gearsets::GREEN, float wheelDiameter = 12.56,
+    Chassis(std::vector<int> motorPorts, pros::IMU& inertial, float rotation = 0.0, double kP = 1.0, double kI = 0.0, double kD = 0.0, Gearsets gearset = Gearsets::GREEN, float wheelCircumference = 12.56,
         float wheelTrack = 12.0, double gearRatio = 1.0)
-        : inertial(inertial), gearset(gearset), wheelDiameter(wheelDiameter), wheelTrack(wheelTrack), gearRatio(gearRatio)
+        : inertial(inertial), gearset(gearset), wheelCircumference(wheelCircumference), wheelTrack(wheelTrack), gearRatio(gearRatio)
     {
         for (int i = 0; i < motorPorts.size(); ++i)
         {
@@ -42,7 +72,7 @@ public:
             maxRPM = 600;
         }
 
-        ticksPerMotorRevolution *= gearRatio;
+        //ticksPerMotorRevolution *= gearRatio;
 
         for (pros::Motor motor : leftMotors)
         {
@@ -56,10 +86,22 @@ public:
 
     void forward(double lengthInInches, int speed, pros::Controller& master) // Length in inches
     {
-        if (speed > maxRPM)
-            speed = maxRPM;
+        
+        // NOT USING GEAR RATIO
+        speed = std::min(speed, maxRPM);
 
-        double length = lengthInInches * (ticksPerMotorRevolution / wheelDiameter); // In motor ticks
+
+        double length = average(rightMotors, leftMotors) + (lengthInInches * ((300 / 10.21f) * gearRatio)); // In motor ticks
+
+        master.clear();
+        pros::delay(50);
+        master.print(0, 0, "cp: %f", length);
+        pros::delay(50);
+
+        // for (pros::Motor motor : leftMotors)
+        //     motor.tare_position();
+        // for (pros::Motor motor : rightMotors)
+        //     motor.tare_position();
 
         double currentPosition = 0.0; // In ticks
         double previousPosition = 0.0;
@@ -69,23 +111,20 @@ public:
         double previousError = error;
         double speedPercent = speed / maxRPM;
 
-        while (fabs(error) > 10)
+        while (fabs(error) > 5)
         {
-            currentPosition += rightMotors[0].get_position() - previousPosition;
+            currentPosition += average(rightMotors, leftMotors) - previousPosition;
             error = length - currentPosition;
-            previousPosition = rightMotors[0].get_position();
+            previousPosition = average(rightMotors, leftMotors);
+
             integral += error;
             derivative = error - previousError;
 
-            float output = (kP * error);// + (kI * integral) + (kD * derivative) * (1);
+            float output = (kP * error) + (kI * integral) + (kD * derivative);
 
-            setMotorSpeed(error);
+            setMotorSpeed(error * speed);
 
             previousError = error;
-            master.clear();
-            pros::delay(50);
-            master.print(0, 0, "cp: %f", error);
-            pros::delay(50);
             pros::delay(15); // 15ms dT
         }
 
@@ -94,17 +133,14 @@ public:
 
     void turn(double angle, int speed)
     {
-        if (speed > maxRPM)
-            speed = maxRPM;
-        // Calculate the direction to turn
-        int currentAngle = fmod(inertial.get_rotation(), 360);
-        int angleDifference = angle - fmod(inertial.get_rotation(), 360);
-        if (angleDifference < 0)
-            angleDifference += 180;
-        else if (angleDifference > 360)
-            angleDifference -= 180;
+        speed = std::min(speed, maxRPM);
 
-        int direction = angleDifference > 180 ? -1 : 1;
+        // Calculate the direction to turn
+        float currentAngle = fmod(inertial.get_rotation(), 360);
+        float targetAngle = fmod(currentAngle + angle, 360);
+        float angleDifference = targetAngle - currentAngle;
+
+        int direction = targetAngle > 180 ? -1 : 1;
         int mappedSpeed = (speed * 127 / maxRPM);
 
         // Turn left motors forward and right motors backward
@@ -113,7 +149,7 @@ public:
         for (pros::Motor motor : rightMotors)
             motor.move(-mappedSpeed * direction);
 
-        while (abs(angle - fmod(inertial.get_rotation(), 360)) > 0.1)
+        while (fabs(targetAngle - fmod(inertial.get_rotation(), 360)) > 1.0)
         {
             pros::delay(5);
         }
@@ -121,14 +157,13 @@ public:
         setMotorSpeed(0);
     }
 
-    void traceSpline(std::vector<Point> splinePoints, int speed)
+    void traceSpline(std::vector<Point> splinePoints, int speed, bool backwards = 0)
     {
+        speed = std::min(speed, maxRPM);
+
         // Conversion factor from pixels to inches (12 feet = 144 inches = 1000 pixels)
         const double pixelsToInches = 144.0 / 1000.0;
-
-        // Calculate the circumference of the wheel
-        const double wheelCircumference = M_PI * wheelDiameter;
-
+        
         // Iterate over all points in the spline
         for (int i = 0; i < splinePoints.size() - 1; ++i)
         {
@@ -184,17 +219,6 @@ public:
 
             int motorsMoving = leftMotors.size() + rightMotors.size();
 
-            for (pros::Motor motor : leftMotors)
-            {
-                if (motor.get_target_position() == motor.get_position())
-                    --motorsMoving;
-            }
-            for (pros::Motor motor : rightMotors)
-            {
-                if (motor.get_target_position() == motor.get_position())
-                    --motorsMoving;
-            }
-
             while (motorsMoving > 0)
             {
                 motorsMoving = leftMotors.size() + rightMotors.size();
@@ -218,9 +242,9 @@ public:
     inline void setMotorSpeed(int speed)
     {
         for (pros::Motor motor : leftMotors)
-            motor.move(speed);
+            motor.move_velocity(speed);
         for (pros::Motor motor : rightMotors)
-            motor.move(speed);
+            motor.move_velocity(speed);
     }
 
     inline double wheelRotationsToTicks(double rotations)
@@ -238,10 +262,10 @@ public:
     pros::IMU& inertial;
     double kP, kI, kD;
     Gearsets gearset;
-    float wheelDiameter; // Inches
+    float wheelCircumference; // Inches
     float wheelTrack; // Inches
-    float rotation = 0;
-    double gearRatio = 1;
+    float rotation = 0.0;
+    double gearRatio = 1.0;
 
     int ticksPerMotorRevolution = 900;
     int maxRPM = 200;

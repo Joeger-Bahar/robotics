@@ -57,7 +57,7 @@ std::unordered_map<int, std::string> autonNames = {
 autonsIndex selectedAuton = autonsIndex::Defensive;
 
 enum driverPresets { CALEB = 0, JOSHUA, MILO, JAY, JACK, HENRY, HENRY2, TEST, length};
-driverPresets selectedPreset = driverPresets::CALEB;
+driverPresets selectedPreset = driverPresets::JACK;
 
 std::unordered_map<driverPresets, std::string> presetNames = {
 	{driverPresets::CALEB, "Caleb"},
@@ -474,8 +474,11 @@ void checkIntake(const driverPresets currentPreset)
 
 	// Intake for complex people
 	case driverPresets::JACK:
-		Intake.move(pros::E_MAX_MOVE_SPEED);
+		Intake.move(pros::E_MAX_MOVE_SPEED / 4);
+
 		if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R2))
+			Intake.move(pros::E_MAX_MOVE_SPEED);
+		if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L2))
 			Intake.move(-pros::E_MAX_MOVE_SPEED);
 		break;
 
@@ -501,17 +504,17 @@ void checkIntake(const driverPresets currentPreset)
 	}
 }
 
-
-/*
-Don't have a catapult at the moment, but we're building it
-*/
 void checkCatapult(const driverPresets currentPreset)
-{
-	Slapatapult.move(0);
-	
+{	
 	switch (currentPreset)
 	{
 	case driverPresets::JACK:
+		if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R1))
+			Slapatapult.move_velocity(127);
+		else
+			Slapatapult.move(0);
+		break;
+
 	case driverPresets::MILO:
 		if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L2))
 			Slapatapult.move(127);
@@ -556,6 +559,9 @@ void checkPneumatics(pros::ADIDigitalOut& pneumatics, const driverPresets curren
 	switch (currentPreset)
 	{
 	case driverPresets::JACK:
+		if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_L1))
+			wingsOut = !wingsOut;
+		break;
 	case driverPresets::MILO:
 	case driverPresets::JAY:
 		if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_B))
@@ -694,6 +700,7 @@ void opcontrol()
 		pros::delay(2);
 	}
 
+	int degrees = 90;
 	while (1)
 	{
 #if 0
@@ -737,9 +744,12 @@ void opcontrol()
 			BR.move_relative(300, 400);
 			pros::delay(1000);
 		}
-
 		if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_Y))
-			chassis.forward(36, 600, master);
+		{
+			chassis.turn(degrees % 360, 100);
+			degrees += 90;
+
+		}
 
 		driveTrain(movementSpeed, selectedPreset);
 		checkmovementSpeed(movementSpeed, selectedPreset);

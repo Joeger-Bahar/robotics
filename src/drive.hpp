@@ -26,16 +26,16 @@ Intake 10, reversed
 Inertial 4
 */
 
-pros::Motor FL(11, 1);
-pros::Motor FR(20);
+pros::Motor FL(11, pros::E_MOTOR_GEARSET_06, 1);
+pros::Motor FR(20, pros::E_MOTOR_GEARSET_06);
 
-pros::Motor ML(2, 1);
-pros::Motor MR(9);
+pros::Motor ML(2, pros::E_MOTOR_GEARSET_06, 1);
+pros::Motor MR(9, pros::E_MOTOR_GEARSET_06);
 
-pros::Motor BL(19, 1);
-pros::Motor BR(12);
+pros::Motor BL(19, pros::E_MOTOR_GEARSET_06, 1);
+pros::Motor BR(12, pros::E_MOTOR_GEARSET_06);
 
-pros::Motor Slapatapult(3);
+pros::Motor Slapatapult(3, pros::E_MOTOR_GEARSET_36);
 
 pros::Motor Intake(10, 1); // Reversed
 
@@ -70,7 +70,7 @@ std::shared_ptr<okapi::OdomChassisController> odomChassis =
 //     .withGains({liftkP, liftkI, liftkD})
 //     .build();
 
-Chassis chassis = Chassis({-11, 20, -2, 9, -19, 12}, inertial, 0.0, 1.0, 0.0, 0.0, Gearsets::BLUE, 11.78, 10.0, (60 / 36));
+Chassis chassis = Chassis({-11, 20, -2, 9, -19, 12}, inertial, 0.0, 0.005, 0.0, 0.0, Gearsets::BLUE, 10.21, 10.0, (60.0f / 36.0f));
 
 pros::Controller master(pros::E_CONTROLLER_MASTER);
 
